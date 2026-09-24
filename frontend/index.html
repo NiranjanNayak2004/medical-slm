@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedLens — Medical SLM</title>
+
+<style>
+*{box-sizing:border-box}
+:root{
+    --bg:#050c12;
+    --panel:#0b1720;
+    --panel2:#0d1d27;
+    --line:#203743;
+    --muted:#78909a;
+    --text:#edf8f8;
+    --accent:#64e6c5;
+    --accent2:#65a9ff;
+    --warning:#f1c76b;
+}
+html{scroll-behavior:smooth}
+body{
+    margin:0;
+    min-height:100vh;
+    background:
+        radial-gradient(circle at 75% 5%,#123c43 0,transparent 28%),
+        radial-gradient(circle at 10% 55%,#0a2630 0,transparent 25%),
+        var(--bg);
+    color:var(--text);
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+.container{width:min(1280px,92%);margin:auto;padding:30px 0 70px}
+.header{display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+    width:48px;height:48px;border-radius:15px;
+    display:grid;place-items:center;
+    background:var(--accent);color:#061017;
+    font-size:23px;font-weight:900;
+    box-shadow:0 0 35px #64e6c555;
+}
+.brand h1{margin:0;font-size:24px}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.status{
+    padding:8px 14px;border:1px solid #29424a;border-radius:999px;
+    color:var(--muted);font-size:12px;transition:.3s
+}
+.status.connected{color:var(--accent);border-color:#2d665b}
+.hero{padding:55px 0 25px}
+.eyebrow{color:var(--accent);letter-spacing:4px;font-size:11px;font-weight:800}
+.hero h2{
+    font-size:clamp(34px,5vw,66px);line-height:1.02;
+    max-width:900px;margin:12px 0 18px;letter-spacing:-2px
+}
+.hero p{max-width:760px;color:#91a9b0;line-height:1.7;margin:0}
+
+/* Neural visualization */
+.neural-card{
+    position:relative;overflow:hidden;height:390px;
+    margin:22px 0;border:1px solid #213942;border-radius:28px;
+    background:linear-gradient(135deg,#07131b,#0a1b23 55%,#071219);
+    box-shadow:0 25px 90px #0007;
+}
+#neuralCanvas{position:absolute;inset:0;width:100%;height:100%}
+.neural-overlay{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;
+}
+.core{
+    width:125px;height:125px;border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:radial-gradient(circle,#183e42,#0b1c23 65%);
+    border:1px solid #64e6c566;
+    box-shadow:0 0 25px #64e6c522,0 0 70px #64e6c511;
+    position:relative;
+}
+.core:before,.core:after{
+    content:"";position:absolute;border-radius:50%;inset:-16px;
+    border:1px solid #64e6c522;animation:orbit 3s linear infinite
+}
+.core:after{inset:-32px;border-color:#65a9ff19;animation-duration:5s;animation-direction:reverse}
+.core-icon{font-size:30px;font-weight:900;color:var(--accent);letter-spacing:2px}
+.core-label{font-size:9px;letter-spacing:2px;color:#8ea9ae;margin-top:5px}
+.neural-caption{
+    position:absolute;left:22px;top:20px;
+    font-size:11px;letter-spacing:2px;color:#75929b
+}
+.neural-live{
+    position:absolute;right:22px;top:18px;
+    display:flex;align-items:center;gap:7px;
+    font-size:10px;color:#7f999f
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent);animation:blink 1.2s infinite}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@keyframes blink{50%{opacity:.3}}
+@keyframes pulse{50%{transform:scale(1.08);opacity:.7}}
+
+/* Processing stages */
+.stagebar{
+    display:grid;grid-template-columns:repeat(5,1fr);
+    gap:8px;margin:15px 0 22px
+}
+.stage{
+    padding:12px 10px;border:1px solid #1d333d;border-radius:14px;
+    background:#091720;color:#718990;text-align:center;
+    font-size:10px;letter-spacing:.6px;transition:.35s
+}
+.stage .num{display:block;color:#46616a;font-size:9px;margin-bottom:4px}
+.stage.active{
+    background:#12352f;border-color:#4bbca5;color:var(--accent);
+    box-shadow:0 0 25px #64e6c51c;transform:translateY(-2px)
+}
+.stage.done{color:#a7d8ce;border-color:#315b53}
+.stage.error{color:#ff9b9b;border-color:#693c42}
+
+/* Main */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{
+    background:rgba(10,24,32,.9);border:1px solid #203640;
+    border-radius:25px;padding:24px;box-shadow:0 20px 70px #0005;
+    backdrop-filter:blur(12px)
+}
+.card-title{color:#78939b;font-size:11px;letter-spacing:2px;margin-bottom:15px}
+textarea{
+    width:100%;min-height:220px;resize:vertical;border:1px solid #29424a;
+    border-radius:17px;padding:17px;background:#061119;color:var(--text);
+    font-size:16px;line-height:1.65;outline:none
+}
+textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #64e6c511}
+button{
+    width:100%;margin-top:14px;padding:15px;border:0;border-radius:14px;
+    background:var(--accent);color:#061017;font-size:14px;font-weight:900;
+    cursor:pointer;transition:.2s
+}
+button:hover{transform:translateY(-2px);box-shadow:0 10px 30px #64e6c533}
+button:disabled{opacity:.5;cursor:wait;transform:none}
+.hint{color:#637d85;font-size:11px;margin-top:12px}
+.result-section{animation:reveal .5s ease}
+@keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.intent-box{
+    display:flex;justify-content:space-between;align-items:center;padding:17px;
+    border-radius:17px;background:linear-gradient(120deg,#10342f,#10252d);
+    border:1px solid #28544b;margin-bottom:18px
+}
+.intent-name{font-size:19px;font-weight:900;color:var(--accent)}
+.confidence{font-size:12px;color:#91aaa9}
+.section{margin-top:21px}
+.section h3{font-size:13px;margin:0 0 11px}
+.pill{
+    display:inline-flex;padding:8px 11px;margin:4px;border-radius:10px;
+    background:#122833;border:1px solid #203e49;font-size:12px
+}
+.rel{
+    margin:7px 0;padding:11px 13px;border-left:3px solid var(--accent);
+    background:#08151c;border-radius:8px;color:#c5d5d7;font-size:13px
+}
+.rel b{color:var(--accent)}
+.timeline{position:relative;padding-left:24px}
+.timeline:before{
+    content:"";position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:#28414a
+}
+.timeline-item{position:relative;margin-bottom:19px;animation:timelineIn .5s ease both}
+.timeline-item:before{
+    content:"";position:absolute;left:-24px;top:4px;width:10px;height:10px;
+    border-radius:50%;background:var(--accent);box-shadow:0 0 15px var(--accent)
+}
+.timeline-time{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.timeline-event{
+    margin-top:6px;padding:11px;border-radius:11px;background:#0b1b23;border:1px solid #1e343d
+}
+.state{color:#82999f;font-size:10px;margin-left:6px}
+@keyframes timelineIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.muted{color:var(--muted)}
+.loader{text-align:center;padding:40px 0}
+.loader-ring{
+    width:48px;height:48px;margin:auto;border-radius:50%;
+    border:2px solid #203740;border-top-color:var(--accent);
+    border-right-color:var(--accent2);animation:spin .8s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error{color:#ff9b9b}
+@media(max-width:850px){
+    .grid{grid-template-columns:1fr}
+    .stagebar{grid-template-columns:1fr 1fr}
+    .neural-card{height:320px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="header">
+    <div class="brand">
+        <div class="logo">M</div>
+        <div>
+            <h1>MedLens</h1>
+            <p>Medical Language Intelligence</p>
+        </div>
+    </div>
+    <div id="backendStatus" class="status">Backend: checking...</div>
+</header>
+
+<section class="hero">
+    <div class="eyebrow">MEDICAL SLM</div>
+    <h2>From messy language to a living medical timeline.</h2>
+    <p>
+        MedLens sends the statement to your local Python Medical SLM,
+        extracts medical meaning, builds relationships and reconstructs
+        the patient's temporal history.
+    </p>
+</section>
+
+<!-- Animated AI graph -->
+<section class="neural-card">
+    <canvas id="neuralCanvas"></canvas>
+    <div class="neural-caption">LIVE MEDICAL REASONING GRAPH</div>
+    <div class="neural-live"><span class="live-dot"></span> LOCAL MODEL</div>
+    <div class="neural-overlay">
+        <div class="core">
+            <div class="core-icon">AI</div>
+            <div class="core-label">MEDICAL SLM</div>
+        </div>
+    </div>
+</section>
+
+<div class="stagebar" id="stagebar">
+    <div class="stage"><span class="num">01</span>Normalize</div>
+    <div class="stage"><span class="num">02</span>Intent</div>
+    <div class="stage"><span class="num">03</span>Entities</div>
+    <div class="stage"><span class="num">04</span>Relations</div>
+    <div class="stage"><span class="num">05</span>Timeline</div>
+</div>
+
+<div class="grid">
+
+<section class="card">
+    <div class="card-title">PATIENT STATEMENT</div>
+
+    <textarea id="medicalInput"
+        placeholder="Enter a medical statement...">My father had fevr yesterday with dizziness and vomiting</textarea>
+
+    <button id="analyzeButton" onclick="analyzeMedicalText()">
+        Analyze Statement
+    </button>
+
+    <div class="hint">
+        Try: "I took paracetamol for fever yesterday"
+    </div>
+</section>
+
+<section class="card">
+    <div class="card-title">MEDICAL UNDERSTANDING</div>
+    <div id="result">
+        <p class="muted">
+            Enter a statement and start the analysis.
+        </p>
+    </div>
+</section>
+
+</div>
+</div>
+
+<script>
+const API_URL = "http://127.0.0.1:5000";
+
+const canvas = document.getElementById("neuralCanvas");
+const ctx = canvas.getContext("2d");
+
+let graphNodes = [];
+let graphEdges = [];
+let particles = [];
+let graphRunning = true;
+
+function resizeCanvas(){
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    buildAmbientGraph();
+}
+
+function buildAmbientGraph(){
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    const cx = w/2;
+    const cy = h/2;
+
+    graphNodes = [];
+    graphEdges = [];
+    particles = [];
+
+    const labels = [
+        "tokens","context","attention","symptom",
+        "history","time","entity","relation",
+        "patient","medication","signal","memory",
+        "pattern","event","knowledge","output"
+    ];
+
+    labels.forEach((label,i)=>{
+        const angle = (Math.PI*2/labels.length)*i;
+        const radius = 105 + (i%3)*42;
+
+        graphNodes.push({
+            id:"n"+i,
+            label,
+            x:cx + Math.cos(angle)*radius,
+            y:cy + Math.sin(angle)*radius*.68,
+            baseX:cx + Math.cos(angle)*radius,
+            baseY:cy + Math.sin(angle)*radius*.68,
+            r: i%4===0 ? 7 : 4,
+            phase:Math.random()*Math.PI*2,
+            type:"ambient"
+        });
+    });
+
+    for(let i=0;i<graphNodes.length;i++){
+        graphEdges.push({
+            a:graphNodes[i],
+            b:graphNodes[(i+1)%graphNodes.length]
+        });
+
+        if(i%2===0){
+            graphEdges.push({
+                a:graphNodes[i],
+                b:graphNodes[(i+5)%graphNodes.length]
+            });
+        }
+    }
+
+    createParticles();
+}
+
+function createParticles(){
+    particles=[];
+    graphEdges.forEach(edge=>{
+        if(Math.random()>.35){
+            particles.push({
+                edge,
+                t:Math.random(),
+                speed:.0025+Math.random()*.003
+            });
+        }
+    });
+}
+
+function setMedicalGraph(entities, subject, time){
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    const cx = w/2;
+    const cy = h/2;
+
+    graphNodes=[];
+    graphEdges=[];
+    particles=[];
+
+    const nodes = [];
+
+    nodes.push({
+        id:"subject",
+        label:subject || "patient",
+        x:cx-170,y:cy,
+        baseX:cx-170,baseY:cy,
+        r:9,type:"person"
+    });
+
+    (entities || []).forEach((entity,i)=>{
+        const angle = -Math.PI/2 + i*Math.PI*2/Math.max(entities.length,1);
+        const radius = 125;
+
+        nodes.push({
+            id:"entity"+i,
+            label:entity.text,
+            x:cx+Math.cos(angle)*radius,
+            y:cy+Math.sin(angle)*radius,
+            baseX:cx+Math.cos(angle)*radius,
+            baseY:cy+Math.sin(angle)*radius,
+            r:8,type:entity.type
+        });
+    });
+
+    if(time){
+        nodes.push({
+            id:"time",
+            label:time,
+            x:cx+175,y:cy+100,
+            baseX:cx+175,baseY:cy+100,
+            r:8,type:"time"
+        });
+    }
+
+    graphNodes=nodes;
+
+    const subjectNode=nodes[0];
+
+    nodes.slice(1).forEach(n=>{
+        graphEdges.push({a:subjectNode,b:n});
+    });
+
+    const entityNodes=nodes.filter(n=>n.type==="symptom"||n.type==="condition"||n.type==="medication");
+
+    if(entityNodes.length>1){
+        for(let i=1;i<entityNodes.length;i++){
+            graphEdges.push({
+                a:entityNodes[0],
+                b:entityNodes[i]
+            });
+        }
+    }
+
+    const timeNode=nodes.find(n=>n.id==="time");
+    if(timeNode){
+        graphEdges.push({a:subjectNode,b:timeNode});
+    }
+
+    createParticles();
+}
+
+function drawGraph(t){
+    const w=canvas.clientWidth;
+    const h=canvas.clientHeight;
+
+    ctx.clearRect(0,0,w,h);
+
+    const grad=ctx.createRadialGradient(w/2,h/2,20,w/2,h/2,Math.max(w,h)*.6);
+    grad.addColorStop(0,"rgba(100,230,197,.05)");
+    grad.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=grad;
+    ctx.fillRect(0,0,w,h);
+
+    graphNodes.forEach(n=>{
+        if(n.baseX){
+            n.x=n.baseX+Math.sin(t*.001+n.phase)*3;
+            n.y=n.baseY+Math.cos(t*.0012+n.phase)*3;
+        }
+    });
+
+    graphEdges.forEach(edge=>{
+        ctx.beginPath();
+        ctx.moveTo(edge.a.x,edge.a.y);
+        ctx.lineTo(edge.b.x,edge.b.y);
+        ctx.strokeStyle="rgba(100,230,197,.13)";
+        ctx.lineWidth=1;
+        ctx.stroke();
+    });
+
+    particles.forEach(p=>{
+        p.t+=p.speed;
+        if(p.t>1)p.t=0;
+
+        const x=p.edge.a.x+(p.edge.b.x-p.edge.a.x)*p.t;
+        const y=p.edge.a.y+(p.edge.b.y-p.edge.a.y)*p.t;
+
+        ctx.beginPath();
+        ctx.arc(x,y,2,0,Math.PI*2);
+        ctx.fillStyle="#64e6c5";
+        ctx.shadowBlur=12;
+        ctx.shadowColor="#64e6c5";
+        ctx.fill();
+        ctx.shadowBlur=0;
+    });
+
+    graphNodes.forEach(n=>{
+        const pulse=1+Math.sin(t*.002+n.phase)*.12;
+        const color=
+            n.type==="person" ? "#65a9ff" :
+            n.type==="time" ? "#f1c76b" :
+            n.type==="symptom" ? "#64e6c5" :
+            "#7fa6b2";
+
+        ctx.beginPath();
+        ctx.arc(n.x,n.y,n.r*pulse,0,Math.PI*2);
+        ctx.fillStyle=color;
+        ctx.shadowBlur=16;
+        ctx.shadowColor=color;
+        ctx.fill();
+        ctx.shadowBlur=0;
+
+        if(n.label){
+            ctx.font="10px Segoe UI";
+            ctx.fillStyle="rgba(190,215,218,.72)";
+            ctx.textAlign="center";
+            ctx.fillText(n.label,n.x,n.y+n.r+15);
+        }
+    });
+
+    requestAnimationFrame(drawGraph);
+}
+
+async function checkBackend(){
+    const status=document.getElementById("backendStatus");
+
+    try{
+        const response=await fetch(API_URL+"/health");
+
+        if(!response.ok) throw new Error();
+
+        const data=await response.json();
+
+        if(data.status==="ok"){
+            status.textContent="Backend: connected";
+            status.classList.add("connected");
+        }
+    }catch(error){
+        status.textContent="Backend: offline";
+    }
+}
+
+function setStages(active=-1){
+    document.querySelectorAll(".stage").forEach((el,i)=>{
+        el.classList.remove("active","done","error");
+
+        if(i<active) el.classList.add("done");
+        if(i===active) el.classList.add("active");
+    });
+}
+
+async function animateStages(){
+    const stages=document.querySelectorAll(".stage");
+
+    for(let i=0;i<stages.length;i++){
+        stages[i].classList.add("active");
+
+        await new Promise(resolve=>setTimeout(resolve,420));
+
+        stages[i].classList.remove("active");
+        stages[i].classList.add("done");
+    }
+}
+
+async function analyzeMedicalText(){
+
+    const input=document.getElementById("medicalInput");
+    const result=document.getElementById("result");
+    const button=document.getElementById("analyzeButton");
+
+    const text=input.value.trim();
+
+    if(!text){
+        result.innerHTML='<p class="error">Please enter a medical statement.</p>';
+        return;
+    }
+
+    button.disabled=true;
+    setStages(0);
+
+    result.innerHTML=`
+        <div class="loader">
+            <div class="loader-ring"></div>
+            <p class="muted">Running Medical SLM...</p>
+        </div>
+    `;
+
+    try{
+        const response=await fetch(API_URL+"/analyze",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({text})
+        });
+
+        if(!response.ok){
+            throw new Error("API returned "+response.status);
+        }
+
+        const data=await response.json();
+
+        // Flask /analyze returns the medical result at the top level.
+        const entities=data.analysis?.medical_entities || data.medical_entities || [];
+        const subject=
+            data.subject ||
+            data.timeline?.subject ||
+            data.analysis?.subject ||
+            "patient";
+
+        const time=
+            data.time ||
+            data.timeline?.timeline?.[0]?.time ||
+            data.analysis?.time ||
+            "";
+
+        setMedicalGraph(entities,subject,time);
+
+        await animateStages();
+
+        displayResult(data,text);
+
+    }catch(error){
+
+        console.error(error);
+
+        document.querySelectorAll(".stage")
+            .forEach(s=>s.classList.add("error"));
+
+        result.innerHTML=`
+            <p class="error">
+                Medical SLM analysis failed.
+            </p>
+            <p class="muted">
+                ${safe(error.message || "Unknown frontend error")}
+            </p>
+        `;
+
+    }finally{
+        button.disabled=false;
+    }
+}
+
+function safe(value){
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+function displayResult(result) {
+
+    const out = document.getElementById("result");
+
+    const analysis = result.analysis || {};
+
+    const entities =
+        analysis.medical_entities ||
+        result.medical_entities ||
+        [];
+
+    const relationships =
+        analysis.relationships ||
+        result.relationships ||
+        [];
+
+    const subject =
+        result.subject ||
+        result.timeline?.subject ||
+        "unknown";
+
+    const correctedText =
+        analysis.corrected_text ||
+        result.corrected_text ||
+        result.input ||
+        "";
+
+    const time =
+        result.time ||
+        analysis.time ||
+        result.timeline?.timeline?.[0]?.time ||
+        "";
+
+    const intent =
+        result.intent ||
+        analysis.intent ||
+        {};
+
+    const timeline =
+        result.timeline || {};
+
+    const items =
+        Array.isArray(timeline)
+            ? timeline
+            : (timeline.timeline || []);
+
+    const entityHTML = entities.length
+        ? entities.map(entity => `
+            <span class="pill">
+                ${safe(entity.text)} · ${safe(entity.type)}
+            </span>
+        `).join("")
+        : `<span class="muted">None detected</span>`;
+
+    const relHTML = relationships.length
+        ? relationships.map(relation => `
+            <div class="rel">
+                ${safe(relation.subject)}
+                →
+                <b>${safe(relation.relation)}</b>
+                →
+                ${safe(relation.object)}
+            </div>
+        `).join("")
+        : `<p class="muted">No relationships detected.</p>`;
+
+    let timeHTML = "";
+
+    if (items.length) {
+
+        timeHTML = items.map((item,index) => `
+            <div
+                class="timeline-item"
+                style="animation-delay:${index * 0.08}s"
+            >
+
+                <div class="timeline-time">
+                    ${safe(item.time || time || "unspecified")}
+                </div>
+
+                ${
+                    (item.events || []).map(event => `
+                        <div class="timeline-event">
+                            <b>${safe(event.entity || event.text || "")}</b>
+                            <span class="state">
+                                ${safe(event.state || "active")}
+                            </span>
+                        </div>
+                    `).join("")
+                }
+
+            </div>
+        `).join("");
+
+    } else {
+
+        timeHTML = `
+            <div class="timeline-item">
+
+                <div class="timeline-time">
+                    ${safe(time || "Current")}
+                </div>
+
+                <div>
+                    ${
+                        entities.map(entity => `
+                            <div class="timeline-event">
+                                <b>${safe(entity.text)}</b>
+                                <span class="state">
+                                    ${entity.type === "medication"
+                                        ? "taken"
+                                        : "experienced"}
+                                </span>
+                            </div>
+                        `).join("")
+                    }
+                </div>
+
+            </div>
+        `;
+    }
+
+    const intentName =
+        intent.name ||
+        intent.intent ||
+        "Medical event";
+
+    const confidence =
+        typeof intent.confidence === "number"
+            ? (intent.confidence * 100).toFixed(1) + "%"
+            : "—";
+
+    out.innerHTML = `
+
+        <div class="intent-box">
+
+            <div>
+                <div class="card-title">DETECTED SUBJECT</div>
+                <div class="intent-name">
+                    ${safe(subject)}
+                </div>
+            </div>
+
+            <div class="confidence">
+                Intent: ${safe(intentName)}
+                <br>
+                Confidence: ${confidence}
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h3>Corrected Text</h3>
+
+            <p>
+                ${safe(correctedText)}
+            </p>
+
+        </div>
+
+        <div class="section">
+
+            <h3>Medical Entities</h3>
+
+            <div>
+                ${entityHTML}
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h3>Relationships</h3>
+
+            ${relHTML}
+
+        </div>
+
+        <div class="section">
+
+            <h3>Medical Timeline</h3>
+
+            <div class="timeline">
+
+                ${timeHTML}
+
+            </div>
+
+        </div>
+    `;
+}
+window.addEventListener("resize",resizeCanvas);
+
+resizeCanvas();
+requestAnimationFrame(drawGraph);
+checkBackend();
+</script>
+
+</body>
+</html>

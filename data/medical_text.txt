@@ -1,0 +1,30 @@
+I have fever.
+I have a fever.
+Fever is a common symptom.
+Fever may cause an increased body temperature.
+A person with fever may feel warm.
+Fever and headache can occur together.
+I have headache.
+I have a headache.
+Headache is pain or discomfort in the head.
+A person may experience headache with fever.
+I have cough.
+I have a cough.
+Cough is a reflex that helps clear the airways.
+A person with cough may have throat irritation.
+Fever and cough can occur together.
+Headache and cough can occur together.
+A person may have fever and headache.
+A person may have fever and cough.
+Fever is a symptom of many conditions.
+Headache is a common symptom.
+Cough is a common symptom.
+Symptoms can occur together.
+A symptom is a change that may indicate a health condition.
+The body temperature may increase during fever.
+A cough can help clear the airways.
+Headache may cause discomfort.
+A person with fever may also have headache.
+A person with fever may also have cough.
+A person with headache may also have fever.
+A person with cough may also have fever.

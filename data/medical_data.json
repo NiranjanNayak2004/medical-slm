@@ -1,0 +1,281 @@
+{
+    "symptoms": {
+        "fever": {
+            "type": "symptom",
+            "description": "A temporary increase in body temperature.",
+            "aliases": ["high temperature", "raised temperature", "pyrexia"],
+            "related": ["chills", "sweating", "fatigue"],
+            "causes": ["infection", "inflammation"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "immune",
+            "body_parts": ["whole body"],
+            "typical_duration": "varies depending on cause",
+            "red_flags": ["very high temperature", "confusion", "difficulty breathing"],
+            "when_to_seek_care": "Seek medical care if severe, persistent, or accompanied by serious symptoms."
+        },
+
+        "headache": {
+            "type": "symptom",
+            "description": "Pain or discomfort in the head.",
+            "aliases": ["head pain", "cephalalgia"],
+            "related": ["dizziness", "fatigue", "nausea"],
+            "causes": ["stress", "dehydration", "infection", "migraine"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "nervous",
+            "body_parts": ["head"],
+            "typical_duration": "hours to days",
+            "red_flags": ["sudden severe headache", "confusion", "weakness"],
+            "when_to_seek_care": "Seek medical care for sudden severe or unusual headaches."
+        },
+
+        "dizziness": {
+            "type": "symptom",
+            "description": "A sensation of unsteadiness or lightheadedness.",
+            "aliases": ["lightheadedness", "unsteadiness", "vertigo"],
+            "related": ["nausea", "vomiting", "headache"],
+            "causes": ["dehydration", "low blood pressure", "inner ear problems"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "nervous",
+            "body_parts": ["head", "inner ear"],
+            "typical_duration": "minutes to days",
+            "red_flags": ["loss of consciousness", "difficulty speaking", "weakness"],
+            "when_to_seek_care": "Seek medical care if severe, recurrent, or associated with neurological symptoms."
+        },
+
+        "vomiting": {
+            "type": "symptom",
+            "description": "Forceful emptying of stomach contents through the mouth.",
+            "aliases": ["throwing up", "being sick", "emesis"],
+            "related": ["nausea", "dizziness", "abdominal pain"],
+            "causes": ["infection", "food poisoning", "medication effects"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "digestive",
+            "body_parts": ["stomach", "digestive tract"],
+            "typical_duration": "hours to days",
+            "red_flags": ["blood in vomit", "severe dehydration", "persistent vomiting"],
+            "when_to_seek_care": "Seek medical care if vomiting is persistent or causes significant dehydration."
+        },
+
+        "nausea": {
+            "type": "symptom",
+            "description": "A feeling of sickness with an inclination to vomit.",
+            "aliases": ["feeling sick", "sick feeling"],
+            "related": ["vomiting", "dizziness", "stomach discomfort"],
+            "causes": ["infection", "food poisoning", "medications", "motion sickness"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "digestive",
+            "body_parts": ["stomach"],
+            "typical_duration": "hours to days",
+            "red_flags": ["persistent vomiting", "severe abdominal pain", "dehydration"],
+            "when_to_seek_care": "Seek medical care if persistent or accompanied by severe symptoms."
+        },
+
+        "fatigue": {
+            "type": "symptom",
+            "description": "A feeling of tiredness or lack of energy.",
+            "aliases": ["tiredness", "exhaustion", "weakness"],
+            "related": ["fever", "headache", "dizziness"],
+            "causes": ["lack of sleep", "infection", "stress", "medical conditions"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "whole body",
+            "body_parts": ["whole body"],
+            "typical_duration": "hours to weeks",
+            "red_flags": ["severe weakness", "confusion", "fainting"],
+            "when_to_seek_care": "Seek medical care if persistent or unexplained."
+        },
+
+        "chest pain": {
+            "type": "symptom",
+            "description": "Pain or discomfort felt in the chest.",
+            "aliases": ["chest discomfort", "chest pressure"],
+            "related": ["shortness of breath", "dizziness", "sweating"],
+            "causes": ["musculoskeletal problems", "respiratory conditions", "heart-related conditions"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "cardiovascular",
+            "body_parts": ["chest", "heart", "lungs"],
+            "typical_duration": "varies",
+            "red_flags": ["severe chest pain", "shortness of breath", "fainting", "sweating"],
+            "when_to_seek_care": "Sudden or severe chest pain requires urgent medical evaluation."
+        },
+
+        "shortness of breath": {
+            "type": "symptom",
+            "description": "Difficulty or discomfort in breathing.",
+            "aliases": ["breathlessness", "difficulty breathing", "dyspnea"],
+            "related": ["chest pain", "cough", "dizziness"],
+            "causes": ["asthma", "respiratory infection", "heart-related conditions"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "respiratory",
+            "body_parts": ["lungs", "chest"],
+            "typical_duration": "varies",
+            "red_flags": ["severe breathing difficulty", "blue lips", "chest pain"],
+            "when_to_seek_care": "Severe or sudden breathing difficulty requires urgent medical evaluation."
+        },
+
+        "cough": {
+            "type": "symptom",
+            "description": "A reflex action that helps clear the airways.",
+            "aliases": ["coughing"],
+            "related": ["fever", "shortness of breath", "sore throat"],
+            "causes": ["common cold", "asthma", "respiratory infection"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "respiratory",
+            "body_parts": ["lungs", "throat", "airways"],
+            "typical_duration": "days to weeks",
+            "red_flags": ["blood in cough", "severe breathing difficulty"],
+            "when_to_seek_care": "Seek medical care if persistent, severe, or associated with breathing difficulty."
+        }
+    },
+
+    "conditions": {
+        "diabetes": {
+            "type": "condition",
+            "description": "A group of conditions affecting blood glucose regulation.",
+            "aliases": ["diabetes mellitus", "high blood sugar"],
+            "related": ["high blood glucose", "fatigue", "increased thirst"],
+            "causes": ["insulin resistance", "insufficient insulin production"],
+            "symptoms": ["increased thirst", "frequent urination", "fatigue"],
+            "risk_factors": ["family history", "obesity", "physical inactivity"],
+            "severity": ["controlled", "uncontrolled"],
+            "body_system": "endocrine",
+            "body_parts": ["pancreas", "blood"],
+            "common_treatments": ["diet management", "physical activity", "medication"],
+            "medications": ["insulin", "metformin"],
+            "typical_duration": "long-term",
+            "red_flags": ["very high blood glucose", "confusion", "loss of consciousness"],
+            "when_to_seek_care": "Medical follow-up is important for monitoring and management."
+        },
+
+        "asthma": {
+            "type": "condition",
+            "description": "A condition affecting the airways and causing episodes of breathing difficulty.",
+            "aliases": ["bronchial asthma"],
+            "related": ["cough", "wheezing", "shortness of breath"],
+            "causes": ["airway inflammation", "environmental triggers"],
+            "symptoms": ["cough", "wheezing", "shortness of breath"],
+            "risk_factors": ["allergies", "family history", "environmental exposure"],
+            "severity": ["mild", "moderate", "severe"],
+            "body_system": "respiratory",
+            "body_parts": ["lungs", "airways"],
+            "common_treatments": ["inhaler therapy", "trigger avoidance"],
+            "medications": ["bronchodilators", "inhaled corticosteroids"],
+            "typical_duration": "long-term",
+            "red_flags": ["severe breathing difficulty", "difficulty speaking"],
+            "when_to_seek_care": "Urgent medical care may be needed during severe attacks."
+        },
+
+        "common cold": {
+            "type": "condition",
+            "description": "A common viral infection affecting the upper respiratory tract.",
+            "aliases": ["cold", "viral cold", "upper respiratory infection"],
+            "related": ["cough", "fever", "sore throat", "runny nose"],
+            "causes": ["viral infection"],
+            "symptoms": ["cough", "fever", "sore throat", "runny nose"],
+            "risk_factors": ["exposure to infected people", "close contact"],
+            "severity": ["mild", "moderate"],
+            "body_system": "respiratory",
+            "body_parts": ["nose", "throat", "airways"],
+            "common_treatments": ["rest", "fluids", "symptom management"],
+            "typical_duration": "about 1 to 2 weeks",
+            "red_flags": ["difficulty breathing", "persistent high fever"],
+            "when_to_seek_care": "Seek medical care if symptoms become severe or persistent."
+        },
+
+        "high blood pressure": {
+            "type": "condition",
+            "description": "A condition in which blood pressure remains elevated.",
+            "aliases": ["hypertension", "high BP"],
+            "related": ["blood pressure", "heart disease"],
+            "causes": ["genetic factors", "diet", "lifestyle factors"],
+            "symptoms": ["often no noticeable symptoms"],
+            "risk_factors": ["age", "family history", "obesity", "high-sodium diet"],
+            "severity": ["controlled", "uncontrolled"],
+            "body_system": "cardiovascular",
+            "body_parts": ["heart", "blood vessels"],
+            "common_treatments": ["lifestyle modification", "blood pressure medication"],
+            "medications": ["antihypertensive medicines"],
+            "typical_duration": "long-term",
+            "red_flags": ["very high blood pressure", "chest pain", "neurological symptoms"],
+            "when_to_seek_care": "Regular medical monitoring is important."
+        }
+    },
+
+    "medications": {
+        "paracetamol": {
+            "type": "medication",
+            "description": "A medicine commonly used to relieve pain and reduce fever.",
+            "aliases": ["acetaminophen", "pain reliever"],
+            "related": ["fever", "headache", "pain"],
+            "treats": ["fever", "headache", "mild pain"],
+            "body_system": "whole body",
+            "typical_use": "pain and fever relief",
+            "route": ["oral"],
+            "common_forms": ["tablet", "capsule", "liquid"],
+            "safety_notes": ["Follow the recommended dose.", "Avoid excessive use."],
+            "red_flags": ["suspected overdose", "severe allergic reaction"],
+            "when_to_seek_care": "Seek medical help for suspected overdose or serious reactions."
+        },
+
+        "ibuprofen": {
+            "type": "medication",
+            "description": "A medicine commonly used for pain, inflammation and fever.",
+            "aliases": ["NSAID", "anti-inflammatory pain reliever"],
+            "related": ["pain", "inflammation", "fever"],
+            "treats": ["pain", "inflammation", "fever"],
+            "body_system": "whole body",
+            "typical_use": "pain, inflammation and fever relief",
+            "route": ["oral"],
+            "common_forms": ["tablet", "capsule", "liquid"],
+            "safety_notes": ["Follow recommended dosing.", "Some people should avoid NSAIDs."],
+            "red_flags": ["severe allergic reaction", "gastrointestinal bleeding"],
+            "when_to_seek_care": "Seek medical advice if serious reactions occur."
+        }
+    },
+
+    "body_parts": {
+        "head": {
+            "type": "body_part",
+            "description": "The upper part of the human body.",
+            "aliases": ["head region"],
+            "related": ["brain", "face"],
+            "body_system": "nervous",
+            "functions": ["contains the brain", "contains sensory organs"]
+        },
+
+        "throat": {
+            "type": "body_part",
+            "description": "The passage connecting the mouth and nasal passages to the respiratory and digestive systems.",
+            "aliases": ["pharynx"],
+            "related": ["mouth", "airways"],
+            "body_system": "respiratory",
+            "functions": ["passage for air", "passage for food"]
+        },
+
+        "stomach": {
+            "type": "body_part",
+            "description": "An organ involved in digestion.",
+            "aliases": ["gastric organ"],
+            "related": ["digestive tract", "abdomen"],
+            "body_system": "digestive",
+            "functions": ["stores food", "helps digest food"]
+        },
+
+        "lungs": {
+            "type": "body_part",
+            "description": "Organs responsible for exchanging oxygen and carbon dioxide.",
+            "aliases": ["lung"],
+            "related": ["airways", "respiratory system"],
+            "body_system": "respiratory",
+            "functions": ["oxygen exchange", "carbon dioxide removal"]
+        },
+
+        "heart": {
+            "type": "body_part",
+            "description": "A muscular organ that pumps blood throughout the body.",
+            "aliases": ["cardiac organ"],
+            "related": ["blood vessels", "circulatory system"],
+            "body_system": "cardiovascular",
+            "functions": ["pumps blood", "maintains circulation"]
+        }
+    }
+}

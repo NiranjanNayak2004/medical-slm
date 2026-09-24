@@ -1,0 +1,69 @@
+[
+    {
+        "text": "I had fevr yesterday",
+        "expected_subject": "I",
+        "expected_entities": ["fever"],
+        "expected_time": "yesterday"
+    },
+    {
+        "text": "My father had fevr yesterday",
+        "expected_subject": "father",
+        "expected_entities": ["fever"],
+        "expected_time": "yesterday"
+    },
+    {
+        "text": "He had a fever with dizziness and vomiting",
+        "expected_subject": "he",
+        "expected_entities": ["fever", "dizziness", "vomiting"]
+    },
+    {
+        "text": "I took paracetamol for fever yesterday",
+        "expected_subject": "I",
+        "expected_entities": ["paracetamol", "fever"],
+        "expected_time": "yesterday"
+    },
+    {
+        "text": "My mother took paracetamol yesterday",
+        "expected_subject": "mother",
+        "expected_entities": ["paracetamol"],
+        "expected_time": "yesterday"
+    },
+    {
+        "text": "I have high blood pressure",
+        "expected_subject": "I",
+        "expected_entities": ["high blood pressure"]
+    },
+    {
+        "text": "I have chest pain",
+        "expected_subject": "I",
+        "expected_entities": ["chest pain"]
+    },
+    {
+        "text": "I have shortness of breath",
+        "expected_subject": "I",
+        "expected_entities": ["shortness of breath"]
+    },
+    {
+        "text": "I have common cold",
+        "expected_subject": "I",
+        "expected_entities": ["common cold"]
+    },
+    {
+        "text": "My father had fever yesterday with dizziness and vomiting",
+        "expected_subject": "father",
+        "expected_entities": ["fever", "dizziness", "vomiting"],
+        "expected_time": "yesterday"
+    },
+    {
+        "text": "My mother had nausea today",
+        "expected_subject": "mother",
+        "expected_entities": ["nausea"],
+        "expected_time": "today"
+    },
+    {
+        "text": "I had headache this morning",
+        "expected_subject": "I",
+        "expected_entities": ["headache"],
+        "expected_time": "this morning"
+    }
+]
