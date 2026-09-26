@@ -1,0 +1,19 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Large medical corpus
+data/medical_corpus.txt
+data/clean_medical_corpus.txt
+
+# Generated training datasets
+data/train_inputs.npy
+data/train_targets.npy
+
+# Generated model files
+*.npy
+*.npz
+
+# Environment
+.env
